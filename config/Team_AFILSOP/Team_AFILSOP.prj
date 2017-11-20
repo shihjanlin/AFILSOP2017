@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<project name="Team_AFILSOP" version="2.0">
+ <folder desc="Configuration Files" expand="" name="Configuration" path="config" type="config">
+  <file name="System Configuration" path=".\config\system.xml" type="config/sys" />
+ </folder>
+ <folder active="true" desc="Tasks" expand="*.dat" name="Captured Files" path="files" type="capture" />
+ <file name="test_split_000.dat" path="./config/test_split_000.dat" type="capture/datfile" />
+ <file name="test_split_001.dat" path="./config/test_split_001.dat" type="capture/datfile" />
+</project>

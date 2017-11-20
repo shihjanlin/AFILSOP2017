@@ -1,0 +1,33 @@
+<adtf:export xmlns:adtf="adtf">
+ <folder name="Jury_Main_localhost">
+  <folder name="components">
+   <folder name="FilterTraceView" />
+  </folder>
+ </folder>
+ <folder name="TestKonf">
+  <folder name="components">
+   <folder filter_tree_expanded_list="" name="FilterTraceView" />
+  </folder>
+  <folder name="windows">
+   <folder Height="396" PosX="576" PosY="640" Visible="false" Width="304" name="AADC_Car_Controller" />
+   <folder Height="411" Maximized="false" Minimized="false" PosX="180" PosY="0" Visible="true" Width="1270" name="Signal_View" />
+   <folder Height="480" Minimized="false" PosX="0" PosY="97" Visible="true" Width="640" name="Video_Display_Image_Processe_" />
+   <folder Height="30" PosX="621" PosY="100" Visible="false" Width="72" name="Video_Display_Edge_Detection_" />
+   <folder Height="366" Minimized="false" PosX="665" PosY="168" Visible="false" Width="725" name="AADC_Sensor_Visualization" />
+   <folder Height="430" Minimized="false" PosX="1032" PosY="190" Visible="true" Width="460" name="SOP_Map_Visualization" />
+   <folder Height="486" Minimized="false" PosX="1085" PosY="114" Visible="false" Width="304" name="SOP_StatusTestGenerator" />
+   <folder Height="30" Minimized="false" PosX="94" PosY="256" Visible="false" Width="72" name="Marker" />
+  </folder>
+ </folder>
+ <folder name="Live">
+  <folder name="components">
+   <folder name="FilterTraceView" />
+  </folder>
+  <folder name="windows">
+   <folder Height="396" Visible="true" Width="304" name="AADC_Car_Controller" />
+   <folder Height="510" Visible="true" Width="304" name="AADC_Driver_Module" />
+   <folder Height="366" PosX="219" PosY="21" Width="725" name="AADC_Sensor_Visualization" />
+   <folder Height="960" Width="1280" name="Marker_Detection-Basler_RGB_Marker_Display" />
+  </folder>
+ </folder>
+</adtf:export>

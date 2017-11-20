@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<adtf:project xmlns:adtf="adtf">
+ <general_settings>
+  <property name="active_configuration" type="String" value="TestKonf" />
+  <property name="enable_messagebus" type="Bool" value="true" />
+  <property name="synchronizing_type" type="Int" value="1" />
+  <property name="media_description_files" type="String" value="./../description/*.description;./../addons/*/description/*.description;./../src/examples/src/description/*.description;../../../description/*.*" />
+  <property name="media_description_enable_provide_signals" type="Bool" value="true" />
+  <property name="global_log_level" type="Int" value="4" />
+ </general_settings>
+ <configurations>
+  <configuration description="" name="Live">
+   <graph>
+    <subgraph alias="Base_Config" idref="Base_Config" priority="1" />
+    <filter alias="AADC_Watchdog_Trigger" idref="adtf.aadc.watchdogTrigger" priority="2">
+     <settings />
+    </filter>
+    <filter alias="AADC_Basler_Camera" idref="adtf.aadc.baslercamera" priority="3">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+      <property name="ROI::Height" type="Int" value="400" />
+      <property name="ROI::Width" type="Int" value="1000" />
+      <property name="ROI::XOffset" type="Int" value="140" />
+     </settings>
+    </filter>
+    <filter alias="AADC_Realsense_Camera" idref="adtf.aadc.aadc_realsense" priority="4">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <filter alias="AADC_Fisheye_Undistortion_" idref="adtf.aadc.fisheyeUndistort" priority="9">
+     <settings>
+      <property name="Calibration File" type="String" value="../../../configuration_files/basler_fisheye_intrinsic_calib.yml" />
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection active="false" connection_priority="50" dest="AADC_Fisheye_Undistortion_.Video_Input" interface="" source="AADC_Basler_Camera.outputRGB" />
+    <filter alias="Realsense_RGB_Proc_Display" idref="adtf.visual.video_display" priority="17">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <filter alias="Realsense_Depth_Display" idref="adtf.visual.video_display" priority="17">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection active="false" connection_priority="50" dest="Realsense_Depth_Display.input" interface="" source="AADC_Realsense_Camera.outputDepthVisualization" />
+    <filter alias="AADC_Sensor_Visualization" idref="adtf.aadc.SensorVisualization" priority="11">
+     <settings />
+    </filter>
+    <filter alias="AADC_Car_Controller" idref="adtf.aadc.CarController" priority="6">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="AADC_User_OpenCV_Template" idref="adtf.user_opencv_Template" priority="15" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.UltrasonicStruct" interface="" source="Base_Config.UltrasonicStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.VoltageStruct" interface="" source="Base_Config.VoltageStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.WheelRightStruct" interface="" source="Base_Config.WheelRightStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.WheelLeftStruct" interface="" source="Base_Config.WheelLeftStruct" />
+    <connection connection_priority="50" dest="Base_Config.SpeedController" interface="" source="AADC_Car_Controller.SpeedController" />
+    <connection connection_priority="50" dest="Base_Config.SteeringController" interface="" source="AADC_Car_Controller.SteeringController" />
+    <connection connection_priority="50" dest="Base_Config.headLightEnabled" interface="" source="AADC_Car_Controller.headLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.brakeLightEnabled" interface="" source="AADC_Car_Controller.brakeLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.reverseLightEnabled" interface="" source="AADC_Car_Controller.reverseLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.turnSignalLeftEnabled" interface="" source="AADC_Car_Controller.turnSignalLeftEnabled" />
+    <connection connection_priority="50" dest="Base_Config.turnSignalRightEnabled" interface="" source="AADC_Car_Controller.turnSignalRightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.hazzardLightEnabled" interface="" source="AADC_Car_Controller.hazzardLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.USSFrontEnabled" interface="" source="AADC_Car_Controller.USSFrontEnabled" />
+    <connection connection_priority="50" dest="Base_Config.USSRearEnabled" interface="" source="AADC_Car_Controller.USSRearEnabled" />
+    <connection active="false" connection_priority="50" dest="AADC_User_OpenCV_Template.Video_Input" interface="" source="AADC_Realsense_Camera.outputRGB" />
+    <connection active="false" connection_priority="50" dest="Realsense_RGB_Proc_Display.input" interface="" source="AADC_User_OpenCV_Template.Video_Output" />
+    <filter alias="RearCam" idref="adtf.io.linux_video_capture_device" priority="5">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+      <property name="BitsPerPixel" type="Int" value="24" />
+      <property name="captureheight" type="Int" value="480" />
+      <property name="capturewidth" type="Int" value="640" />
+      <property name="devicename" type="String" value="/dev/video3" />
+      <property name="FlipVertical" type="Bool" value="true" />
+      <property name="Height" type="Int" value="480" />
+      <property name="Width" type="Int" value="640" />
+     </settings>
+    </filter>
+    <filter alias="RearCam_Display" idref="adtf.visual.video_display" priority="17">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+      <property name="capture_path" type="String" value=".." />
+     </settings>
+    </filter>
+    <subgraph active="false" alias="Lane_Detection" idref="Lane_Detection" priority="10" />
+    <connection active="false" connection_priority="50" dest="Lane_Detection.video_Basler_undistorted" interface="" source="AADC_Fisheye_Undistortion_.Video_Output" />
+    <subgraph alias="Marker_Detection" idref="Marker_Detection" priority="11" />
+    <connection active="false" connection_priority="50" dest="Marker_Detection.video_Basler_undistorted" interface="" source="AADC_Fisheye_Undistortion_.Video_Output" />
+    <filter alias="AADC_Driver_Module" idref="adtf.aadc.driverModule" priority="8">
+     <settings />
+    </filter>
+    <connection connection_priority="50" dest="AADC_Driver_Module.Jury_Struct" interface="" source="Base_Config.Jury_Struct" />
+    <connection connection_priority="50" dest="AADC_Driver_Module.Maneuver_List" interface="" source="Base_Config.Jury_ManeuverList" />
+    <connection connection_priority="50" dest="Base_Config.Driver_Struct" interface="" source="AADC_Driver_Module.Driver_Struct" />
+    <connection connection_priority="50" dest="Base_Config.WatchdogAlive" interface="" source="AADC_Watchdog_Trigger.WatchdogAliveSignal" />
+    <connection active="false" connection_priority="50" dest="RearCam_Display" interface="" source="RearCam" />
+    <filter alias="AADC_AHRS_Calculator" idref="adtf.aadc.AHRSCalculator" priority="16" />
+    <outport alias="UltrasonicStruct" />
+    <outport alias="InerMeasUnitStruct" />
+    <outport alias="WheelLeftStruct" />
+    <outport alias="WheelRightStruct" />
+    <outport alias="VoltageStruct" />
+    <outport alias="Basler_outputRGB" />
+    <outport alias="Realsense_outputRGB" />
+    <outport alias="RearView_outputRGB" />
+    <outport alias="Realsense_DepthRaw" />
+    <connection connection_priority="50" dest="Basler_outputRGB" interface="" source="AADC_Basler_Camera.outputRGB" />
+    <connection active="false" connection_priority="50" dest="Realsense_outputRGB" interface="" source="AADC_Realsense_Camera.outputRGB" />
+    <connection active="false" connection_priority="50" dest="Realsense_DepthRaw" interface="" source="AADC_Realsense_Camera.outputDepthRaw" />
+    <connection active="false" connection_priority="50" dest="RearView_outputRGB" interface="" source="RearCam.output" />
+    <connection connection_priority="50" dest="VoltageStruct" interface="" source="Base_Config.VoltageStruct" />
+    <connection connection_priority="50" dest="WheelRightStruct" interface="" source="Base_Config.WheelRightStruct" />
+    <connection connection_priority="50" dest="WheelLeftStruct" interface="" source="Base_Config.WheelLeftStruct" />
+    <connection connection_priority="50" dest="InerMeasUnitStruct" interface="" source="Base_Config.InerMeasUnitStruct" />
+    <connection connection_priority="50" dest="AADC_AHRS_Calculator.InerMeasUnit_Struct" interface="" source="Base_Config.InerMeasUnitStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.InerMeasUnitStruct" interface="" source="AADC_AHRS_Calculator.InerMeasUnit_Struct_Updated" />
+    <connection connection_priority="50" dest="UltrasonicStruct" interface="" source="Base_Config.UltrasonicStruct" />
+   </graph>
+   <settings>
+    <property name="connection_priority" type="Int" value="50" />
+   </settings>
+  </configuration>
+  <configuration description="" name="Playback">
+   <graph>
+    <filter alias="Harddisk_Player" idref="adtf.stg.harddisk_player" priority="1">
+     <settings>
+      <property name="filename" type="String" value="../files/test_split_000.dat;../files/test_split_001.dat;../files/test_split_002.dat" />
+     </settings>
+    </filter>
+    <filter alias="AADC_Fisheye_Undistortion_" idref="adtf.aadc.fisheyeUndistort" priority="1">
+     <settings>
+      <property name="Calibration File" type="String" value="..\..\..\configuration_files\basler_fisheye_intrinsic_calib.yml" />
+     </settings>
+    </filter>
+    <subgraph alias="Lane_Detection" idref="Lane_Detection" priority="2" />
+    <subgraph alias="Marker_Detection" idref="Marker_Detection" priority="3" />
+    <connection connection_priority="50" dest="Lane_Detection.video_Basler_undistorted" interface="" source="AADC_Fisheye_Undistortion_.Video_Output" />
+    <connection connection_priority="50" dest="Marker_Detection.video_Basler_undistorted" interface="" source="AADC_Fisheye_Undistortion_.Video_Output" />
+    <filter alias="AADC_Sensor_Visualization" idref="adtf.aadc.SensorVisualization" priority="4">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <filter alias="Realsense_Depth_Display" idref="adtf.visual.video_display" priority="21">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="Realsense_RGB_Proc_Display" idref="adtf.visual.video_display" priority="20">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <filter alias="RearCam_Display" idref="adtf.visual.video_display" priority="22">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="AADC_Fisheye_Undistortion_.Video_Input" interface="" source="Harddisk_Player.Basler_outputRGB" />
+    <connection active="false" connection_priority="50" dest="AADC_Sensor_Visualization" interface="" source="Harddisk_Player.UltrasonicStruct" />
+    <connection active="false" connection_priority="50" dest="AADC_Sensor_Visualization" interface="" source="Harddisk_Player.InerMeasUnitStruct" />
+    <connection active="false" connection_priority="50" dest="AADC_Sensor_Visualization" interface="" source="Harddisk_Player.WheelLeftStruct" />
+    <connection active="false" connection_priority="50" dest="AADC_Sensor_Visualization" interface="" source="Harddisk_Player.WheelRightStruct" />
+    <connection active="false" connection_priority="50" dest="AADC_Sensor_Visualization" interface="" source="Harddisk_Player.VoltageStruct" />
+    <connection active="false" connection_priority="50" dest="Realsense_RGB_Proc_Display.input" interface="" source="Harddisk_Player.Realsense_outputRGB" />
+    <connection active="false" connection_priority="50" dest="RearCam_Display.input" interface="" source="Harddisk_Player.RearView_outputRGB" />
+    <connection connection_priority="50" dest="Realsense_Depth_Display.input" interface="" source="Harddisk_Player.Basler_outputRGB" />
+   </graph>
+  </configuration>
+  <configuration description="" name="Recording">
+   <graph>
+    <filter alias="Harddisk_Recorder" idref="adtf.stg.harddisk_recorder" priority="1">
+     <settings>
+      <property name="splitsize" type="Int" value="3000" />
+      <property name="filename" type="String" value="../files/test" />
+      <property name="start_on_startup" type="Bool" value="true" />
+      <property name="stop_on_media_type_change" type="Bool" value="true" />
+      <property name="use_sample_time" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="Harddisk_Recorder.UltrasonicStruct" interface="" source="Live.UltrasonicStruct" />
+    <connection connection_priority="50" dest="Harddisk_Recorder.InerMeasUnitStruct" interface="" source="Live.InerMeasUnitStruct" />
+    <connection connection_priority="50" dest="Harddisk_Recorder.WheelLeftStruct" interface="" source="Live.WheelLeftStruct" />
+    <connection connection_priority="50" dest="Harddisk_Recorder.WheelRightStruct" interface="" source="Live.WheelRightStruct" />
+    <subgraph alias="Live" idref="Live" priority="2" />
+    <connection connection_priority="50" dest="Harddisk_Recorder.Basler_outputRGB" interface="" source="Live.Basler_outputRGB" />
+   </graph>
+  </configuration>
+  <configuration description="" name="Lane_Detection">
+   <graph>
+    <filter alias="AADC_Lane_Detection" idref="adtf.aadc_LaneDetection" priority="10">
+     <settings>
+      <property name="ROI::Height" type="Int" value="100" />
+      <property name="ROI::YOffset" type="Int" value="620" />
+      <property name="Algorithm::Image Binarization Threshold" type="Int" value="150" />
+      <property name="Algorithm::Maximum Line Width" type="Int" value="50" />
+     </settings>
+    </filter>
+    <filter alias="Lane_Detection_Display" idref="adtf.visual.video_display" priority="23">
+     <settings>
+      <property name="ScaleGCL" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <inport alias="video_Basler_undistorted" />
+    <connection connection_priority="50" dest="AADC_Lane_Detection.Video_Input" interface="" source="video_Basler_undistorted" />
+    <connection connection_priority="50" dest="Lane_Detection_Display.gcl_input" interface="" source="AADC_Lane_Detection.GCL" />
+    <connection connection_priority="50" dest="Lane_Detection_Display.input" interface="" source="AADC_Lane_Detection.Video_Output_Debug" />
+   </graph>
+  </configuration>
+  <configuration description="" name="Marker_Detection">
+   <graph>
+    <filter alias="Basler_RGB_Marker_Display" idref="adtf.visual.video_display" priority="24">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+      <property name="Height" type="Int" value="960" />
+      <property name="Width" type="Int" value="1280" />
+     </settings>
+    </filter>
+    <filter alias="AADC_Marker_Detector" idref="adtf.aadc.markerDetector" priority="12">
+     <settings>
+      <property name="Calibration File for used Camera" type="String" value="../../../configuration_files/basler_afterFisheye_intrinsic_calibration.yml" />
+      <property name="Detector Paramater File" type="String" value="../../../configuration_files/detector_params.yml" />
+      <property name="Size of Markers" type="Float" value="0,117.0" />
+     </settings>
+    </filter>
+    <inport alias="video_Basler_undistorted" />
+    <connection connection_priority="50" dest="Basler_RGB_Marker_Display.gcl_input" interface="" source="AADC_Marker_Detector.GCL_Markers" />
+    <connection connection_priority="50" dest="Basler_RGB_Marker_Display.input" interface="" source="video_Basler_undistorted" />
+    <connection connection_priority="50" dest="AADC_Marker_Detector.Video_RGB_input" interface="" source="video_Basler_undistorted" />
+    <outport alias="RoadSign" />
+    <outport alias="Road_ext" />
+    <outport alias="Mark_Video_RGB_Output" />
+    <connection connection_priority="50" dest="RoadSign" interface="" source="AADC_Marker_Detector.RoadSign" />
+    <connection connection_priority="50" dest="Road_ext" interface="" source="AADC_Marker_Detector.RoadSign_ext" />
+    <connection connection_priority="50" dest="Mark_Video_RGB_Output" interface="" source="AADC_Marker_Detector.Video_RGB_output" />
+   </graph>
+  </configuration>
+  <configuration description="" name="TestKonf">
+   <graph>
+    <filter alias="AADC_Watchdog_Trigger" idref="adtf.aadc.watchdogTrigger" priority="1">
+     <settings />
+    </filter>
+    <filter alias="AADC_Car_Controller" idref="adtf.aadc.CarController" priority="2">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <subgraph alias="Base_Config" idref="Base_Config" priority="1" />
+    <connection connection_priority="50" dest="Base_Config.WatchdogAlive" interface="" source="AADC_Watchdog_Trigger.WatchdogAliveSignal" />
+    <filter alias="Signal_View" idref="adtf.ui.signal_view" priority="2" />
+    <filter alias="AADC_Sensor_Visualization" idref="adtf.aadc.SensorVisualization" priority="10">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.UltrasonicStruct" interface="" source="Base_Config.UltrasonicStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.VoltageStruct" interface="" source="Base_Config.VoltageStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.WheelRightStruct" interface="" source="Base_Config.WheelRightStruct" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.WheelLeftStruct" interface="" source="Base_Config.WheelLeftStruct" />
+    <filter alias="AADC_AHRS_Calculator" idref="adtf.aadc.AHRSCalculator" priority="4" />
+    <connection connection_priority="50" dest="AADC_AHRS_Calculator.InerMeasUnit_Struct" interface="" source="Base_Config.InerMeasUnitStruct" />
+    <filter alias="AADC_Basler_Camera" idref="adtf.aadc.baslercamera" priority="5">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+      <property name="ROI::Height" type="Int" value="150" />
+      <property name="ROI::Width" type="Int" value="800" />
+      <property name="ROI::XOffset" type="Int" value="240" />
+      <property name="ROI::YOffset" type="Int" value="530" />
+      <property name="Brightness" type="Float" value="0,15.0" />
+     </settings>
+    </filter>
+    <filter alias="AADC_Fisheye_Undistortion_" idref="adtf.aadc.fisheyeUndistort" priority="6">
+     <settings>
+      <property name="Calibration File" type="String" value="../../../configuration_files/basler_fisheye_intrinsic_calib.yml" />
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="AADC_Fisheye_Undistortion_.Video_Input" interface="" source="AADC_Basler_Camera.outputRGB" />
+    <filter alias="Video_Display_Image_Processe_" idref="adtf.visual.video_display" priority="7">
+     <settings>
+      <property name="Height" type="Int" value="480" />
+      <property name="Width" type="Int" value="640" />
+     </settings>
+    </filter>
+    <filter alias="Video_Display_Edge_Detection_" idref="adtf.visual.video_display" priority="8">
+     <settings>
+      <property name="Height" type="Int" value="480" />
+      <property name="Width" type="Int" value="640" />
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <filter alias="SOP_Image_Process" idref="adtf.sop_image_process" priority="9" />
+    <connection connection_priority="50" dest="Video_Display_Image_Processe_.input" interface="" source="SOP_Image_Process.VideoOutput" />
+    <connection active="false" connection_priority="50" dest="Video_Display_Edge_Detection_.input" interface="" source="SOP_Image_Process.VideoEdgeOutput" />
+    <filter alias="SOP_Converter_Wheels" idref="adtf.sop.converterWheels" priority="10">
+     <settings>
+      <property name="Filtering enabled" type="Bool" value="true" />
+      <property name="active" type="Bool" value="true" />
+      <property name="Plausibilize with Direction Indicator" type="Bool" value="false" />
+      <property name="Use Speed Controller Input Direction" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="SOP_Converter_Wheels.WheelLeft_Struct" interface="" source="Base_Config.WheelLeftStruct" />
+    <connection connection_priority="50" dest="SOP_Converter_Wheels.WheelRight_Struct" interface="" source="Base_Config.WheelRightStruct" />
+    <connection connection_priority="50" dest="SOP_Wheel_Speed_Controller.measured_wheelSpeed" interface="" source="SOP_Converter_Wheels.car_speed" />
+    <filter alias="SOP_Positioning" idref="adtf.sop.position" priority="10">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+      <property name="Configuration" type="String" value="../../../configuration_files/roadSigns_Finale.xml" />
+      <property name="Camera Offset::Yaw" type="Float" value="-3.0" />
+      <property name="Camera Offset::Lateral" type="Float" value="0.0" />
+      <property name="Camera Offset::Longitudinal" type="Float" value="0,1.0" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="SOP_Positioning.Speed" interface="" source="SOP_Converter_Wheels.car_speed" />
+    <filter alias="AADC_Map_Visualization" idref="adtf.aadc.MapVisualization" priority="10">
+     <settings>
+      <property name="IndoorMap File" type="String" value="../../../maps/aadc2017#1.xodr" />
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <filter alias="SOP_Wheel_Speed_Controller" idref="adtf.aadc.sop_wheelSpeedController" priority="3">
+     <settings>
+      <property name="Soft_Starters::Kp_value" type="Float" value="8.0" />
+      <property name="PID::Ki_value" type="Float" value="20.0" />
+      <property name="PID::Kp_value" type="Float" value="20.0" />
+      <property name="PID::Kd_value" type="Float" value="0.0" />
+     </settings>
+    </filter>
+    <filter alias="SOP_Map_Visualization" idref="adtf.visual.video_display" priority="10">
+     <settings>
+      <property name="Height" type="Int" value="430" />
+      <property name="Width" type="Int" value="460" />
+     </settings>
+    </filter>
+    <filter alias="SOP_AutonomousDriving" idref="adtf.user_sop_autonomous_driving" priority="10">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+      <property name="EmergencyBreak::Rear Minimum break time in S" type="Float" value="0,1.0" />
+      <property name="EmergencyBreak::Front Minimum break time in S" type="Float" value="0,45.0" />
+      <property name="Crossing::TurnRight::stop crossing in cm" type="Float" value="-4.0" />
+      <property name="Parking::Slot distance 1" type="Float" value="-107.0" />
+      <property name="Parking::Slot distance 4" type="Float" value="-265.0" />
+      <property name="Lane Following::NMPC Weighting factor::High speed y" type="Float" value="3.0" />
+      <property name="Crossing::TurnLeft::no stopcrossing in cm" type="Float" value="-11.0" />
+      <property name="Parking::Marker distance in cm" type="Float" value="150.0" />
+      <property name="Parking::Slot distance 3" type="Float" value="-212.0" />
+      <property name="Crossing::Marker distance in cm" type="Float" value="120.0" />
+      <property name="Crossing::Straight::NMPC Weighting factor::y" type="Float" value="15.0" />
+      <property name="Parking::Slot distance 2" type="Float" value="-160.0" />
+      <property name="Parking::NMPC Weighting factor::x" type="Float" value="10.0" />
+      <property name="Parking::NMPC Weighting factor::y" type="Float" value="30.0" />
+      <property name="Lane Following::NMPC Weighting factor::Low speed y" type="Float" value="6,5.0" />
+      <property name="Lane Following::maximum speed" type="Float" value="1.0" />
+      <property name="Configuration" type="String" value="../../../configuration_files/roadSigns_Finale_jury.xml" />
+      <property name="Lane Following::minimum speed" type="Float" value="0,6.0" />
+      <property name="Mode switch::Jury Model on/off" type="Bool" value="true" />
+      <property name="Crossing::TurnRight::no stop crossing in cm" type="Float" value="-12.0" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="SOP_Map_Visualization.input" interface="" source="SOP_AutonomousDriving.Video_Visualization" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.UltrasonicStruct" interface="" source="Base_Config.UltrasonicStruct" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.WheelSpeed" interface="" source="SOP_Converter_Wheels.car_speed" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.LaneInfo" interface="" source="SOP_Image_Process.LaneModelStruct" />
+    <filter alias="SOP_StatusTestGenerator" idref="adtf.aadc.status_test" priority="11">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="Base_Config.SteeringController" interface="" source="SOP_AutonomousDriving.StreeingOutput" />
+    <connection connection_priority="50" dest="SOP_Image_Process.SteeringAngle" interface="" source="SOP_AutonomousDriving.StreeingOutput" />
+    <connection active="false" connection_priority="50" dest="SOP_AutonomousDriving.StateFlag" interface="" source="SOP_StatusTestGenerator.CarControlFlag" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving" interface="" source="SOP_Converter_Wheels.distance_overall" />
+    <connection connection_priority="50" dest="SOP_Image_Process.VideoInput" interface="" source="AADC_Basler_Camera.outputRGB" />
+    <connection connection_priority="50" dest="SOP_Marker_Detector.Video_RGB_input" interface="" source="AADC_Fisheye_Undistortion_.Video_Output" />
+    <filter alias="Marker" idref="adtf.visual.video_display" priority="12">
+     <settings>
+      <property name="Height" type="Int" value="960" />
+      <property name="Width" type="Int" value="1280" />
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection active="false" connection_priority="50" dest="Marker.input" interface="" source="SOP_Marker_Detector.Video_RGB_output" />
+    <filter alias="SOP_Marker_Detector" idref="adtf.sop.markerDetector" priority="12">
+     <settings>
+      <property name="Calibration File for used Camera" type="String" value="../../../configuration_files/basler_afterFisheye_intrinsic_calibration.yml" />
+      <property name="Detector Paramater File" type="String" value="../../../configuration_files/detector_params.yml" />
+      <property name="ROI::ROI ON/OFF" type="Bool" value="true" />
+      <property name="ROI::Width" type="Int" value="390" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="SOP_AutonomousDriving" interface="" source="SOP_Marker_Detector.RoadSign_ext" />
+    <connection connection_priority="50" dest="Base_Config.headLightEnabled" interface="" source="SOP_AutonomousDriving.headLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.brakeLightEnabled" interface="" source="SOP_AutonomousDriving.brakeLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.reverseLightEnabled" interface="" source="SOP_AutonomousDriving.reverseLightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.turnSignalLeftEnabled" interface="" source="SOP_AutonomousDriving.turnSignalLeftEnabled" />
+    <connection connection_priority="50" dest="Base_Config.turnSignalRightEnabled" interface="" source="SOP_AutonomousDriving.turnSignalRightEnabled" />
+    <connection connection_priority="50" dest="Base_Config.hazzardLightEnabled" interface="" source="SOP_AutonomousDriving.hazzardLightEnabled" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.Jury_Struct" interface="" source="Base_Config.Jury_Struct" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.Maneuver_List" interface="" source="Base_Config.Jury_ManeuverList" />
+    <connection connection_priority="50" dest="Base_Config.Driver_Struct" interface="" source="SOP_AutonomousDriving.Driver_Struct" />
+    <connection connection_priority="50" dest="SOP_Image_Process" interface="" source="SOP_AutonomousDriving.ImageControlStruct" />
+    <connection connection_priority="50" dest="Base_Config.SpeedController" interface="" source="SOP_Wheel_Speed_Controller.actuator_output" />
+    <connection connection_priority="50" dest="SOP_Wheel_Speed_Controller.set_WheelSpeed" interface="" source="SOP_AutonomousDriving.SpeedOutput" />
+    <connection connection_priority="50" dest="SOP_Converter_Wheels.InputControlSpeed" interface="" source="SOP_AutonomousDriving.SpeedOutput" />
+    <subgraph active="false" alias="Jury_Position" idref="PositionOutput" priority="13" url="udp://192.168.0.104:30000" />
+    <subgraph alias="Jury_ObjectsOutput" idref="ObjectsOutput" priority="14" url="tcp://192.168.1.20:30001" />
+    <connection connection_priority="50" dest="SOP_Positioning" interface="" source="SOP_Marker_Detector.RoadSign_ext" />
+    <connection connection_priority="50" dest="AADC_Sensor_Visualization.InerMeasUnitStruct" interface="" source="AADC_AHRS_Calculator.InerMeasUnit_Struct_Updated" />
+    <connection connection_priority="50" dest="SOP_Positioning.InerMeasUnit_Struct" interface="" source="AADC_AHRS_Calculator.InerMeasUnit_Struct_Updated" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving" interface="" source="SOP_Positioning.Position" />
+    <connection active="false" connection_priority="50" dest="Jury_Position.Position" interface="" source="SOP_Positioning.Position" />
+    <connection connection_priority="50" dest="Jury_ObjectsOutput.TrafficSign" interface="" source="SOP_Positioning.TrafficSign Output" />
+    <connection connection_priority="50" dest="Jury_ObjectsOutput.Obstacle" interface="" source="SOP_AutonomousDriving.Obstacle" />
+    <connection connection_priority="50" dest="Jury_ObjectsOutput.ParkingSpace" interface="" source="SOP_AutonomousDriving.ParkingSpace" />
+    <connection connection_priority="50" dest="SOP_Positioning.EKF Position" interface="" source="SOP_AutonomousDriving.EKF_Position" />
+    <connection connection_priority="50" dest="Base_Config.RoadSign_ext" interface="" source="SOP_Marker_Detector.RoadSign_ext" />
+   </graph>
+  </configuration>
+  <configuration description="" name="OfflineTest">
+   <graph>
+    <filter alias="Harddisk_Player" idref="adtf.stg.harddisk_player" priority="1">
+     <settings>
+      <property name="filename" type="String" value="/home/aadc/ADTF/config/Team_AFILSOP/files/test_split_014.dat" />
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="SOP_Image_Process" idref="adtf.sop_image_process" priority="2" />
+    <filter alias="ImageProcess" idref="adtf.visual.video_display" priority="3" />
+    <filter alias="AADC_Fisheye_Undistortion_" idref="adtf.aadc.fisheyeUndistort" priority="4">
+     <settings>
+      <property name="Calibration File" type="String" value="../../../configuration_files/basler_fisheye_intrinsic_calib.yml" />
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="SOP_AutonomousDriving" idref="adtf.user_sop_autonomous_driving" priority="6">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="AADC_AHRS_Calculator" idref="adtf.aadc.AHRSCalculator" priority="7">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="SOP_Converter_Wheels" idref="adtf.sop.converterWheels" priority="8">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="SOP_Positioning" idref="adtf.sop.position" priority="9">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <filter alias="Visual" idref="adtf.visual.video_display" priority="10">
+     <settings>
+      <property name="active" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <subgraph active="false" alias="Marker_Detection" idref="Marker_Detection" priority="5" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.LaneInfo" interface="" source="SOP_Image_Process.LaneModelStruct" />
+    <connection connection_priority="50" dest="SOP_Positioning.InerMeasUnit_Struct" interface="" source="AADC_AHRS_Calculator.InerMeasUnit_Struct_Updated" />
+    <connection connection_priority="50" dest="SOP_Converter_Wheels.WheelLeft_Struct" interface="" source="Harddisk_Player.WheelLeftStruct" />
+    <connection connection_priority="50" dest="SOP_Converter_Wheels.WheelRight_Struct" interface="" source="Harddisk_Player.WheelRightStruct" />
+    <connection connection_priority="50" dest="SOP_Positioning.Speed" interface="" source="SOP_Converter_Wheels.car_speed" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.WheelSpeed" interface="" source="SOP_Converter_Wheels.car_speed" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving" interface="" source="SOP_Positioning.Position" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving" interface="" source="Harddisk_Player.UltrasonicStruct" />
+    <connection connection_priority="50" dest="Visual.input" interface="" source="SOP_AutonomousDriving.Video_Visualization" />
+    <filter alias="AADC_Car_Controller" idref="adtf.aadc.CarController" priority="11">
+     <settings>
+      <property name="active" type="Bool" value="false" />
+     </settings>
+    </filter>
+    <connection active="false" connection_priority="50" dest="SOP_Image_Process.SteeringAngle" interface="" source="AADC_Car_Controller.SteeringController" />
+    <connection connection_priority="50" dest="SOP_Converter_Wheels.SpeedController_Struct" interface="" source="SOP_AutonomousDriving.SpeedOutput" />
+    <connection connection_priority="50" dest="SOP_Image_Process.SteeringAngle" interface="" source="SOP_AutonomousDriving.StreeingOutput" />
+    <filter alias="Signal_View" idref="adtf.ui.signal_view" priority="12" />
+    <filter alias="Video_Display2" idref="adtf.visual.video_display" priority="13" />
+    <connection connection_priority="50" dest="Video_Display2.input" interface="" source="SOP_Image_Process.VideoEdgeOutput" />
+    <filter alias="SOP_StatusTestGenerator" idref="adtf.aadc.status_test" priority="14">
+     <settings />
+    </filter>
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.StateFlag" interface="" source="SOP_StatusTestGenerator.CarControlFlag" />
+    <filter alias="SOP_Marker_Detector" idref="adtf.sop.markerDetector" priority="15">
+     <settings>
+      <property name="Calibration File for used Camera" type="String" value="../../../configuration_files/basler_afterFisheye_intrinsic_calibration.yml" />
+      <property name="Detector Paramater File" type="String" value="../../../configuration_files/detector_params.yml" />
+      <property name="ROI::ROI ON/OFF" type="Bool" value="true" />
+     </settings>
+    </filter>
+    <connection connection_priority="50" dest="SOP_Marker_Detector.Video_RGB_input" interface="" source="AADC_Fisheye_Undistortion_.Video_Output" />
+    <connection connection_priority="50" dest="SOP_Positioning" interface="" source="SOP_Marker_Detector.RoadSign_ext" />
+    <filter alias="Video_Display" idref="adtf.visual.video_display" priority="16" />
+    <connection connection_priority="50" dest="Video_Display.input" interface="" source="SOP_Marker_Detector.Video_RGB_output" />
+    <filter alias="SOP_Rear_Camera_Image_Process" idref="adtf.sop_rear_camera_image_process" priority="15" />
+    <filter alias="Video_Display_Rear_Camera" idref="adtf.visual.video_display" priority="17" />
+    <connection connection_priority="50" dest="ImageProcess.input" interface="" source="SOP_Image_Process.VideoOutput" />
+    <connection connection_priority="50" dest="Video_Display_Rear_Camera.input" interface="" source="SOP_Rear_Camera_Image_Process.VideoOutput" />
+    <connection connection_priority="50" dest="SOP_Rear_Camera_Image_Process.VideoInput" interface="" source="Harddisk_Player.RearView_outputRGB" />
+    <connection connection_priority="50" dest="SOP_AutonomousDriving.RearLaneInfo" interface="" source="SOP_Rear_Camera_Image_Process.RearLaneModelStruct" />
+   </graph>
+   <settings>
+    <property name="connection_priority" type="Int" value="50" />
+   </settings>
+  </configuration>
+  <configuration description="" name="PositionOutput">
+   <graph>
+    <inport alias="Position" />
+   </graph>
+  </configuration>
+  <configuration description="" name="ObjectsOutput">
+   <graph>
+    <inport alias="TrafficSign" />
+    <inport alias="Obstacle" />
+    <inport alias="ParkingSpace" />
+   </graph>
+  </configuration>
+ </configurations>
+ <fileinfo adtfversion="2.14.0" configversion="1.3" />
+ <configuration_settings />
+ <adtf_include source="../../BaseConfig/IncludeConfig.xml" />
+ <plugins>
+  <plugin optional="true" url="../../../_install/linux64/bin/$BUILD_TYPE_2$/*.plb" />
+  <plugin optional="true" url="../../../_install/win64_vc100/bin/$BUILD_TYPE_2$/*.plb" />
+ </plugins>
+</adtf:project>
